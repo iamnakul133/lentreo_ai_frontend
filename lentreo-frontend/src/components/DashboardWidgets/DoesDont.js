@@ -15,7 +15,7 @@ const DoesDont = () => {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'));
         const response = await fetch(
-          `${API_URL}chat?message=I am ${userData?.name} date of birth ${userData?.dob} i want response for does and don'ts for me`, 
+          `${API_URL}chat?message=I am ${userData?.name} date of birth ${userData?.dob} i want response for does and don'ts according to the horoscope`, 
           {
             method: 'POST',
             headers: {

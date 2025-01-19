@@ -16,8 +16,8 @@ const DailyHoroscope = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch horoscope');
         }
-        //const data = response;
-        setHoroscope(response);
+        const data = await response.json();
+        setHoroscope(data);
       } catch (err) {
         setError(err.message);
       } finally {
