@@ -1,0 +1,18 @@
+.react-grid-item {
+  height: 100%;
+}
+
+.grid-item {
+  height: 100%;
+  transition: all 200ms ease;
+  transition-property: left, top;
+}
+
+.react-grid-item.react-grid-placeholder {
+  background: #eee;
+  opacity: 0.2;
+  transition-duration: 100ms;
+  z-index: 2;
+  border-radius: 4px;
+  user-select: none;
+} 
