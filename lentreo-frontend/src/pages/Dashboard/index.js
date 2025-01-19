@@ -16,6 +16,7 @@ import './styles.css';
 import DailyHoroscope from '../../components/DashboardWidgets/DailyHoroscope'
 import MonthlyHoroscope from '../../components/DashboardWidgets/MonthlyHoroscope';
 import DoesDont from '../../components/DashboardWidgets/DoesDont';
+import Insights from '../../components/DashboardWidgets/Insights';
 
 const StyledGridItem = styled('div')(({ theme }) => ({
   cursor: 'move',
@@ -41,6 +42,7 @@ const Dashboard = () => {
     lg: [
       { i: 'daily_horo', x: 0, y: 0, w: 4, h: 3 },
       { i: 'monthly_horo', x: 4, y: 0, w: 8, h: 3 },
+      { i: 'insights', x: 0, y: 3, w: 12, h: 3 },
       { i: 'does_dont', x: 0, y: 3, w: 12, h: 3 },
     ]
   });
@@ -72,6 +74,11 @@ const Dashboard = () => {
     <div key="monthly_horo" className="grid-item" style={{ height: '100%' }}>
       <StyledGridItem className="grid-item-title">
         <MonthlyHoroscope />
+      </StyledGridItem>
+    </div>,
+    <div key="insights" className="grid-item" style={{ height: '100%' }}>
+      <StyledGridItem className="grid-item-title">
+        <Insights />
       </StyledGridItem>
     </div>,
     <div key="does_dont" className="grid-item" style={{ height: '100%' }}>

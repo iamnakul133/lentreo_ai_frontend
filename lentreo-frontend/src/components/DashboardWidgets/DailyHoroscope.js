@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, CircularProgress, Box } from '@mui/material';
 import AutoStoriesIcon from '@mui/icons-material/AutoStories';
+import { marked } from 'marked';  // Add marked import
 import { API_URL } from '../../config'
 
 const DailyHoroscope = () => {
@@ -17,7 +18,6 @@ const DailyHoroscope = () => {
         }
         const data = await response.json();
         setHoroscope(data?.data.horoscope_data);
-        console.log(horoscope)
       } catch (err) {
         setError(err.message);
       } finally {
@@ -55,9 +55,24 @@ const DailyHoroscope = () => {
             Daily Horoscope
           </Typography>
         </Box>
-        <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
-          {horoscope|| 'No horoscope available for today.'}
-        </Typography>
+        {horoscope ? (
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              whiteSpace: 'pre-line',
+              '& ul': { paddingLeft: 2, marginTop: 1 },
+              '& li': { marginBottom: 0.5 }
+            }}
+            dangerouslySetInnerHTML={{ 
+              __html: horoscope
+            }}
+          />
+        ) : (
+          <Typography variant="body1" color="text.secondary">
+            No horoscope available for today.
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

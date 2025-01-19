@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Box, Paper, TextField, Button, styled, Avatar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import CircularProgress from '@mui/material/CircularProgress';
 import PageContainer from '../../components/PageContainer';
 import {marked } from 'marked';
 import { API_URL } from '../../config'
+
+const STORAGE_KEY = 'chatMessages';
 
 const ChatContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -68,6 +71,14 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
+const LoadingMessage = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(1),
+  padding: theme.spacing(1),
+  marginLeft: '20px',
+}));
+
 const InputContainer = styled(Box)(({ theme }) => ({
   display: 'flex',
   gap: theme.spacing(1),
@@ -78,9 +89,15 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [userData, setUserData] = useState(null);  // Add userData state
+  const [isLoading, setIsLoading] = useState(false);
 
   // Add useEffect to get userData from localStorage when component mounts
   useEffect(() => {
+    const storedMessages = localStorage.getItem(STORAGE_KEY);
+    if (storedMessages) {
+      setMessages(JSON.parse(storedMessages));
+    }
+    
     const storedUserData = localStorage.getItem('userData');
     if (storedUserData) {
       setUserData(JSON.parse(storedUserData));
@@ -88,14 +105,17 @@ const Chat = () => {
   }, []);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     const userMessage = input; // Store input before clearing
     setInput(''); // Clear input immediately for better UX
+    setIsLoading(true);
 
     // Add user message
     const newMessages = [...messages, { text: userMessage, isUser: true }];
     setMessages(newMessages);
+    // Save to localStorage after adding user message
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newMessages));
 
     try {
       // Make API call to get AI response
@@ -113,22 +133,31 @@ const Chat = () => {
       const [data, statusCode] = await response.json();
       
       // Add AI response to messages
-      setMessages([...newMessages, {
+      const updatedMessages = [...newMessages, {
         text: data.ai_response || 'Sorry, I could not process your request.',
         isUser: false
-      }]);
+      }];
+      
+      setMessages(updatedMessages);
+      // Save to localStorage after adding AI response
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedMessages));
     } catch (error) {
       console.error('Error getting AI response:', error);
       // Add error message to chat
-      setMessages([...newMessages, {
+      const errorMessages = [...newMessages, {
         text: 'Sorry, there was an error processing your request. Please try again.',
         isUser: false
-      }]);
+      }];
+      setMessages(errorMessages);
+      // Save error message to localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(errorMessages));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !isLoading) {
       e.preventDefault();
       handleSend();
     }
@@ -182,13 +211,23 @@ const Chat = () => {
                   ) : (
                     <div style={{paddingLeft: "9px"}}
                       dangerouslySetInnerHTML={{ 
-                        __html: marked(message.text, { breaks: true }) 
+                        __html: marked(message.text || 'No response available.', { breaks: true }) 
                       }} 
                     />
                   )}
                 </MessageBubble>
               </MessageWrapper>
             ))}
+            {isLoading && (
+              <LoadingMessage>
+                <IconWrapper>
+                  <SmartToyIcon sx={{ color: 'secondary.main' }} />
+                </IconWrapper>
+                <MessageBubble elevation={1}>
+                  <CircularProgress size={20} />
+                </MessageBubble>
+              </LoadingMessage>
+            )}
           </MessagesContainer>
           <InputContainer>
             <TextField
@@ -201,6 +240,7 @@ const Chat = () => {
               placeholder="Type your message here..."
               variant="outlined"
               size="small"
+              disabled={isLoading}
               sx={{ 
                 backgroundColor: 'background.paper',
                 '& .MuiOutlinedInput-root': {
@@ -216,8 +256,9 @@ const Chat = () => {
             <Button
               variant="contained"
               color="primary"
-              endIcon={<SendIcon />}
+              endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <SendIcon />}
               onClick={handleSend}
+              disabled={isLoading || !input.trim()}
             >
               Send
             </Button>

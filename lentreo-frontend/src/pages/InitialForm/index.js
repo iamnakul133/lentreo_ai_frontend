@@ -179,7 +179,7 @@ const InitialForm = () => {
       city: formData.city
     };
 
-    const response = await fetch(`${API_URL}process`, {
+    const response = await fetch(`${API_URL}user_info`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

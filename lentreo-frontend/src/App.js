@@ -32,7 +32,7 @@ function App() {
     <StyledEngineProvider injectFirst>
       <ThemeProvider theme={theme}>
         <Router>
-          <Helmet titleTemplate="%s - Lentreo" />
+          <Helmet titleTemplate="%s - SoulBuddy" />
           <CssBaseline />
           <GlobalStyles />
           <ScrollToTop />

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, Typography, CircularProgress, Box } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { API_URL } from '../../config'
+import { API_URL } from '../../config';
+import {marked } from 'marked';
 
 const MonthlyHoroscope = () => {
   const [horoscope, setHoroscope] = useState(null);
@@ -54,9 +55,24 @@ const MonthlyHoroscope = () => {
             Monthly Horoscope
           </Typography>
         </Box>
-        <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: 'pre-line' }}>
-          {horoscope || 'No monthly horoscope available.'}
-        </Typography>
+        {horoscope ? (
+          <Typography 
+            variant="body1" 
+            color="text.secondary" 
+            sx={{ 
+              whiteSpace: 'pre-line',
+              '& ul': { paddingLeft: 2, marginTop: 1 },
+              '& li': { marginBottom: 0.5 }
+            }}
+            dangerouslySetInnerHTML={{ 
+              __html:horoscope
+            }}
+          />
+        ) : (
+          <Typography variant="body1" color="text.secondary">
+            No horoscope available for this month.
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

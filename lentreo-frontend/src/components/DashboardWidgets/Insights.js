@@ -4,18 +4,17 @@ import RuleIcon from '@mui/icons-material/Rule';
 import {marked } from 'marked';
 import { API_URL } from '../../config'
 
-const DoesDont = () => {
-
+const Insights = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchDoesDont = async () => {
+    const fetchInsignts = async () => {
       try {
         const userData = JSON.parse(localStorage.getItem('userData'));
         const response = await fetch(
-          `${API_URL}chat?message=I am ${userData?.name} date of birth ${userData?.dob} i want response for does and don'ts for me`, 
+          `${API_URL}chat?message=I am ${userData?.name} date of birth ${userData?.dob} i want response for - Insights on career, relationships, personal growth, family, and social connections in tabula format`, 
           {
             method: 'POST',
             headers: {
@@ -37,7 +36,7 @@ const DoesDont = () => {
       }
     };
 
-    fetchDoesDont();
+    fetchInsignts();
   }, []);
 
   if (loading) {
@@ -62,32 +61,23 @@ const DoesDont = () => {
     <Card sx={{ height: '100%', overflow: 'auto', paddingLeft: 6 }}>
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-          <RuleIcon sx={{ mr: 1 }} />
           <Typography variant="h6" component="h2">
-            Does & Don'ts
+            Insights
           </Typography>
         </Box>
-        {data ? (
-          <Typography 
-            variant="body1" 
-            color="text.secondary" 
-            sx={{ 
-              whiteSpace: 'pre-line',
-              '& ul': { paddingLeft: 2, marginTop: 1 },
-              '& li': { marginBottom: 0.5 }
-            }}
-            dangerouslySetInnerHTML={{ 
-              __html: marked(data, { breaks: true }) 
-            }}
-          />
-        ) : (
-          <Typography variant="body1" color="text.secondary">
-            No information available.
-          </Typography>
-        )}
+        <Typography 
+          variant="body1" 
+          color="text.secondary" 
+          sx={{ 
+            whiteSpace: 'pre-line',
+            '& ul': { paddingLeft: 2, marginTop: 1 },
+            '& li': { marginBottom: 0.5 }
+          }}
+          dangerouslySetInnerHTML={{ __html: marked(data, { breaks: true }) }}
+        />
       </CardContent>
     </Card>
   );
 };
 
-export default DoesDont;
+export default Insights;
