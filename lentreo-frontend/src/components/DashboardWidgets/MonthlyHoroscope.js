@@ -16,8 +16,8 @@ const MonthlyHoroscope = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch monthly horoscope');
         }
-        const data = await response.json();
-        setHoroscope(data?.data.horoscope_data);
+        //const data = await response.json();
+        setHoroscope(response);
       } catch (err) {
         setError(err.message);
       } finally {
